@@ -1,25 +1,28 @@
 // VigenereCipherPage.js
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card, Nav } from 'react-bootstrap';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import React, { useState } from "react";
+import { Container, Row, Col, Form, Button, Card, Nav } from "react-bootstrap";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const VigenereCipherPage = () => {
-  const [text, setText] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [result, setResult] = useState('');
+  const [text, setText] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [result, setResult] = useState("");
   const [isEncrypt, setIsEncrypt] = useState(true);
 
   const VigenereCipher = (text, keyword, encrypt) => {
     const modifier = encrypt ? 1 : -1;
-    let result = '';
+    let result = "";
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
       if (char.match(/[a-zA-Z]/)) {
         const code = char.charCodeAt(0);
-        const base = char.toLowerCase() === char ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+        const base =
+          char.toLowerCase() === char ? "a".charCodeAt(0) : "A".charCodeAt(0);
         const keyChar = keyword[i % keyword.length];
         const keyCode = keyChar.charCodeAt(0);
-        result += String.fromCharCode(((code - base + modifier * (keyCode - base) + 26) % 26) + base);
+        result += String.fromCharCode(
+          ((code - base + modifier * (keyCode - base) + 26) % 26) + base
+        );
       } else {
         result += char;
       }
@@ -29,7 +32,7 @@ const VigenereCipherPage = () => {
 
   const handleProcess = () => {
     if (keyword.length === 0) {
-      alert('Please enter a keyword.');
+      alert("Please enter a keyword.");
       return;
     }
 
@@ -50,7 +53,7 @@ const VigenereCipherPage = () => {
                 <Form.Group controlId="text">
                   <Form.Label>Text</Form.Label>
                   <Form.Control
-                  className="formInput"
+                    className="formInput"
                     as="textarea"
                     rows={3}
                     value={text}
@@ -64,31 +67,36 @@ const VigenereCipherPage = () => {
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                   />
-                </Form.Group>
-                <Button variant="primary" onClick={handleProcess}>
-                  {isEncrypt ? 'Encrypt' : 'Decrypt'}
+                </Form.Group>{" "}
+                <br />
+                <Button
+                  className="custom-button"
+                  variant="primary"
+                  onClick={handleProcess}
+                >
+                  {isEncrypt ? "Encrypt" : "Decrypt"}
                 </Button>
                 <div>
-                Opsi : {}
-                <Nav.Link
-                  className="custom-button"
-                  href="#"
-                  active={isEncrypt}
-                  onClick={() => setIsEncrypt(true)}
-                >
-                  Encrypt
-                </Nav.Link>
-                <Nav.Link
-                  className="custom-button"
-                  href="#"
-                  active={!isEncrypt}
-                  onClick={() => setIsEncrypt(false)}
-                >
-                  Decrypt
-                </Nav.Link>
-              </div>
-
-                
+                  {" "}
+                  <br />
+                  Opsi : {}
+                  <Nav.Link
+                    className="custom-button"
+                    href="#"
+                    active={isEncrypt}
+                    onClick={() => setIsEncrypt(true)}
+                  >
+                    Encrypt
+                  </Nav.Link>
+                  <Nav.Link
+                    className="custom-button"
+                    href="#"
+                    active={!isEncrypt}
+                    onClick={() => setIsEncrypt(false)}
+                  >
+                    Decrypt
+                  </Nav.Link>
+                </div>
               </Form>
               {result && (
                 <div className="mt-3">
