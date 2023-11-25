@@ -28,12 +28,12 @@ const CaesarCipherPage = () => {
       .join("");
   };
 
-  const handleProcess = () => {
-    if (isEncrypt) {
-      setResult(CaesarCipher(text, shift, true));
-    } else {
-      setResult(CaesarCipher(text, shift, false));
-    }
+  const handleEncrypt = () => {
+    setResult(CaesarCipher(text, shift, true));
+  };
+
+  const handleDecrypt = () => {
+    setResult(CaesarCipher(text, shift, false));
   };
 
   return (
@@ -43,9 +43,14 @@ const CaesarCipherPage = () => {
           <Card>
             <Card.Body>
               <Nav variant="tabs"></Nav>
+              <h2>Caesar Cipher Calculator</h2>
               <Form>
                 <Form.Group controlId="text">
-                  <Form.Label>Text</Form.Label>
+                  <Form.Label>
+                    <strong>
+                      {isEncrypt ? "Plaintext : " : "Ciphertext : "}
+                    </strong>
+                  </Form.Label>
                   <Form.Control
                     className="formInput"
                     as="textarea"
@@ -61,40 +66,37 @@ const CaesarCipherPage = () => {
                     value={shift}
                     onChange={(e) => setShift(parseInt(e.target.value))}
                   />
-                </Form.Group>{" "}
+                </Form.Group>
                 <br />
+              </Form>
+              <div>
                 <Button
                   className="custom-button"
-                  variant="primary"
-                  onClick={handleProcess}
-                >
-                  {isEncrypt ? "Encrypt" : "Decrypt"}
-                </Button>
-              </Form>{" "}
-              <br />
-              <div>
-                Opsi : {}
-                <Nav.Link
-                  className="custom-button"
-                  href="#"
                   active={isEncrypt}
-                  onClick={() => setIsEncrypt(true)}
+                  onClick={() => {
+                    setIsEncrypt(true);
+                    handleEncrypt();
+                  }}
                 >
                   Encrypt
-                </Nav.Link>
-                <Nav.Link
+                </Button>
+                <Button
                   className="custom-button"
-                  href="#"
                   active={!isEncrypt}
-                  onClick={() => setIsEncrypt(false)}
+                  onClick={() => {
+                    setIsEncrypt(false);
+                    handleDecrypt();
+                  }}
                 >
                   Decrypt
-                </Nav.Link>
+                </Button>
               </div>
               {result && (
                 <div className="mt-3">
                   <p>
-                    <strong>Result:</strong>
+                    <strong>
+                      {isEncrypt ? "Ciphertext : " : "Plaintext : "}
+                    </strong>
                   </p>
                   <p>{result}</p>
                   <CopyToClipboard className="custom-button" text={result}>

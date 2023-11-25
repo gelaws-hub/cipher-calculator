@@ -1,31 +1,44 @@
 // App.js
-
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { Container, Row, Col, Nav } from "react-bootstrap";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import CaesarCipherPage from "./CaesarCipherPage";
 import VigenereCipherPage from "./VigenereCipherPage";
-import "./styles.css"; // Import CSS file
+import AboutPage from "./AboutPage"; // Import the new page
+import "./styles.css"; 
 
 const App = () => {
   return (
-    <Router>
-      <div className="navBar">
-        <Nav.Link as={Link} to="/caesar-cipher" className="navLink" activeClassName="activeNavLink">
+    <BrowserRouter>
+      <header className="navBar">
+        <NavLink
+          to="/caesar-cipher"
+          className="navLink"
+          activeClassName="activeLink"
+        >
           Caesar Cipher
-        </Nav.Link>
-
-        <Nav.Link as={Link} to="/vigenere-cipher" className="navLink" activeClassName="activeNavLink">
+        </NavLink>
+        <NavLink
+          to="/vigenere-cipher"
+          className="navLink"
+          activeClassName="activeLink"
+        >
           Vigenere Cipher
-        </Nav.Link>
-      </div>
+        </NavLink>
+        <NavLink
+          to="/about-author"
+          className="navLink"
+          activeClassName="activeLink"
+        >
+          About
+        </NavLink>
+      </header>
 
-      <hr />
       <Routes>
         <Route path="/caesar-cipher" element={<CaesarCipherPage />} />
         <Route path="/vigenere-cipher" element={<VigenereCipherPage />} />
+        <Route path="/about-author" element={<AboutPage />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
 

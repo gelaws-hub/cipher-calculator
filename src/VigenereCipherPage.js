@@ -1,4 +1,3 @@
-// VigenereCipherPage.js
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Nav } from "react-bootstrap";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -8,39 +7,73 @@ const VigenereCipherPage = () => {
   const [keyword, setKeyword] = useState("");
   const [result, setResult] = useState("");
   const [isEncrypt, setIsEncrypt] = useState(true);
+  const [error, setError] = useState(null);
 
   const VigenereCipher = (text, keyword, encrypt) => {
-    const modifier = encrypt ? 1 : -1;
-    let result = "";
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      if (char.match(/[a-zA-Z]/)) {
-        const code = char.charCodeAt(0);
-        const base =
-          char.toLowerCase() === char ? "a".charCodeAt(0) : "A".charCodeAt(0);
-        const keyChar = keyword[i % keyword.length];
-        const keyCode = keyChar.charCodeAt(0);
-        result += String.fromCharCode(
-          ((code - base + modifier * (keyCode - base) + 26) % 26) + base
-        );
-      } else {
-        result += char;
+    try {
+      if (!/^[a-zA-Z]+$/.test(keyword)) {
+        throw new Error("Kunci harus terdiri dari huruf alfabet saja.");
       }
+
+      const modifier = encrypt ? 1 : -1;
+      let result = "";
+      let j = 0; // Initialize outside the loop to track the key position
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+
+        if (/[a-zA-Z]/.test(char)) {
+          const isUpperCase = char === char.toUpperCase();
+          const code = char.toLowerCase().charCodeAt(0);
+          const base = "a".charCodeAt(0);
+
+          let keyChar = keyword[j % keyword.length].toLowerCase();
+          while (!/[a-zA-Z]/.test(keyChar)) {
+            j++;
+            keyChar = keyword[j % keyword.length].toLowerCase();
+          }
+
+          const keyCode = keyChar.charCodeAt(0);
+
+          let encryptedChar = String.fromCharCode(
+            ((code - base + modifier * (keyCode - base) + 26) % 26) + base
+          );
+
+          // Restore the original case
+          encryptedChar = isUpperCase
+            ? encryptedChar.toUpperCase()
+            : encryptedChar;
+
+          result += encryptedChar;
+
+          j++;
+        } else {
+          result += char;
+        }
+      }
+
+      setError(null);
+      return result;
+    } catch (error) {
+      setError(error.message);
+      return "";
     }
-    return result;
   };
 
-  const handleProcess = () => {
+  const handleEncrypt = () => {
     if (keyword.length === 0) {
-      alert("Please enter a keyword.");
+      alert("Mohon masukan keyword");
       return;
     }
+    setResult(VigenereCipher(text, keyword, true));
+  };
 
-    if (isEncrypt) {
-      setResult(VigenereCipher(text, keyword, true));
-    } else {
-      setResult(VigenereCipher(text, keyword, false));
+  const handleDecrypt = () => {
+    if (keyword.length === 0) {
+      alert("Mohon masukan keyword");
+      return;
     }
+    setResult(VigenereCipher(text, keyword, false));
   };
 
   return (
@@ -49,9 +82,14 @@ const VigenereCipherPage = () => {
         <Col md={{ span: 6, offset: 3 }}>
           <Card>
             <Card.Body>
+              <h2>Vigenere Cipher Calculator</h2>
               <Form>
                 <Form.Group controlId="text">
-                  <Form.Label>Text</Form.Label>
+                  <Form.Label>
+                    <strong>
+                      {isEncrypt ? "Plaintext : " : "Ciphertext : "}
+                    </strong>
+                  </Form.Label>
                   <Form.Control
                     className="formInput"
                     as="textarea"
@@ -68,31 +106,31 @@ const VigenereCipherPage = () => {
                     onChange={(e) => setKeyword(e.target.value)}
                   />
                 </Form.Group>{" "}
+                {error && (
+                  <div className="mt-3">
+                    <p style={{ color: "red" }}>{error}</p>
+                  </div>
+                )}
                 <br />
-                <Button
-                  className="custom-button"
-                  variant="primary"
-                  onClick={handleProcess}
-                >
-                  {isEncrypt ? "Encrypt" : "Decrypt"}
-                </Button>
                 <div>
                   {" "}
-                  <br />
-                  Opsi : {}
                   <Nav.Link
                     className="custom-button"
-                    href="#"
                     active={isEncrypt}
-                    onClick={() => setIsEncrypt(true)}
+                    onClick={() => {
+                      setIsEncrypt(true);
+                      handleEncrypt();
+                    }}
                   >
                     Encrypt
                   </Nav.Link>
                   <Nav.Link
                     className="custom-button"
-                    href="#"
                     active={!isEncrypt}
-                    onClick={() => setIsEncrypt(false)}
+                    onClick={() => {
+                      setIsEncrypt(false);
+                      handleDecrypt();
+                    }}
                   >
                     Decrypt
                   </Nav.Link>
@@ -101,10 +139,10 @@ const VigenereCipherPage = () => {
               {result && (
                 <div className="mt-3">
                   <p>
-                    <strong>Result:</strong>
+                    <strong>{isEncrypt ? "Ciphertext : " : "Plaintext : "}</strong>
                   </p>
                   <p>{result}</p>
-                  <CopyToClipboard text={result}>
+                  <CopyToClipboard className="custom-button" text={result}>
                     <Button variant="success">Copy to Clipboard</Button>
                   </CopyToClipboard>
                 </div>
