@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
 
-function App() {
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { Container, Row, Col, Nav } from "react-bootstrap";
+import CaesarCipherPage from "./CaesarCipherPage";
+import VigenereCipherPage from "./VigenereCipherPage";
+import "./styles.css"; // Import CSS file
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="navBar">
+        <Nav.Link as={Link} to="/caesar-cipher" className="navLink" activeClassName="activeNavLink">
+          Caesar Cipher
+        </Nav.Link>
+
+        <Nav.Link as={Link} to="/vigenere-cipher" className="navLink" activeClassName="activeNavLink">
+          Vigenere Cipher
+        </Nav.Link>
+      </div>
+
+      <hr />
+      <Routes>
+        <Route path="/caesar-cipher" element={<CaesarCipherPage />} />
+        <Route path="/vigenere-cipher" element={<VigenereCipherPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
