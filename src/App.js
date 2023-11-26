@@ -34,6 +34,7 @@ const App = () => {
       </header>
 
       <Routes>
+      <Route path="/" element={<VigenereCipherPage />} />
         <Route path="/caesar-cipher" element={<CaesarCipherPage />} />
         <Route path="/vigenere-cipher" element={<VigenereCipherPage />} />
         <Route path="/about-author" element={<AboutPage />} />
